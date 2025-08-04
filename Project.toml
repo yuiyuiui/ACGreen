@@ -1,0 +1,18 @@
+name = "ACGreen"
+uuid = "12345678-1234-1234-1234-123456789012"
+authors = ["Your Name <your.email@example.com>"]
+version = "0.1.0"
+
+[deps]
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+
+[compat]
+julia = "1.6"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+TestExtras = "56f32c1a-1e7c-4f80-9a9a-846a205d9e84"
+
+[targets]
+test = ["Test", "TestExtras"] 
