@@ -9,4 +9,4 @@ This is a package mainly based on Julia for implementing, improving and developi
 |SPX|✅|✅||✅|✅||
 |SOM|✅|✅||✅|✅||
 |NAC|✅|✅||✅|✅||
-|CGS|||
+|CPS|||
