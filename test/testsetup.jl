@@ -101,3 +101,37 @@ function dfcfg(T::Type{<:Real}, spt::SpectrumType;
         return (poles, γ), ctx, GFV
     end
 end
+
+# vector to vector
+function jacobian_check_v2v(f, J::Matrix{T}, x::Vector{T}; η=1e-5, rtol=1e-2,
+                            atol=1e-8, show_err::Bool=true,
+                            show_dy::Bool=false) where {T<:Number}
+    η = T(η)
+    dx = η * x / norm(x)
+    dy = f(x + dx) - f(x)
+    dy_expect = real(conj(J) * dx)
+    err = norm(dy - dy_expect)
+    rel_err = err / min(norm(dy), norm(dy_expect))
+    if show_err
+        @show err
+        @show rel_err
+    end
+    if show_dy
+        @show dy
+        @show dy_expect
+    end
+    return isapprox(dy, dy_expect; rtol=rtol, atol=atol)
+end
+# vector to number
+function gradient_check(f, J::Vector{T}, x::Vector{T}; η=1e-5, rtol=1e-2,
+                        atol=tolerance(T)) where {T<:Number}
+    η = real(T(η))
+    #η = min(η0, findmin(abs.(x))[1])
+    #atol = atol / η0 * η
+    dx = η * J / norm(J)
+    dy = f(x + dx) - f(x)
+    dy_expect = η * norm(J)
+    @show dy
+    @show dy_expect
+    return isapprox(dy, dy_expect; rtol=rtol, atol=atol)
+end

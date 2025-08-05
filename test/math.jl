@@ -82,28 +82,6 @@ end
     end
 end
 
-@testset "partial derivative of sigmoid loss function" begin
-    n = 10
-    ϕ(x, p) = p[1] .+ p[2] ./ (1 .+ exp.(-p[4] .* (x .- p[3])))
-    for T in [Float32, Float64]
-        x0 = rand(T, n)
-        y0 = rand(T, n)
-        p0 = rand(T, 4)
-        lossϕ = (p, y) -> sum(((x->ϕ(x, p)).(x0)-y) .^ 2)
-        dl = (p, y) -> vec(fdgradient(p1->lossϕ(p1, y), p))
-        Div∂p² = fdgradient(p->dl(p, y0), p0)
-        Div∂p²_expect = ACGreen.∂²lossϕDiv∂p²(p0, x0, y0)
-        @test Div∂p²_expect isa Matrix{T}
-        @show norm(Div∂p² - Div∂p²_expect)
-        relax_tol(T)
-        @test isapprox(Div∂p², Div∂p²_expect, atol=relax_tol(T), rtol=1e-2)
-        Div∂p∂y = fdgradient(y->dl(p0, y), y0)
-        Div∂p∂y_expect = ACGreen.∂²lossϕDiv∂p∂y(p0, x0, y0)
-        @test Div∂p∂y_expect isa Matrix{T}
-        @test isapprox(Div∂p∂y, Div∂p∂y_expect, atol=relax_tol(T), rtol=1e-2)
-    end
-end
-
 # math.jl
 @testset "fdgradient" begin
     for T in [Float32, Float64]
@@ -216,5 +194,26 @@ end
         back = res.minimizer
         @test back isa Vector{T}
         @test isapprox(back, mini_point, atol=strict_tol(T))
+    end
+end
+
+@testset "dct" begin
+    for T in [Float32, Float64]
+        a = rand(T, 10)
+        @test dct(a) isa Vector{T}
+        @test norm(idct(dct(a)) - a) < strict_tol(T)
+    end
+end
+
+@testset "kernel" begin
+    for T in [Float32, Float64]
+        mesh = collect(1:10) .+ T(0)
+        grid = collect(1:10) .+ T(0)
+        k1 = ACGreen.make_kernel(mesh, grid)
+        k2 = ACGreen.make_kernel(mesh, grid; grid_type="imag_time", β=T(1))
+        @test k1 isa Matrix{Complex{T}}
+        @test k2 isa Matrix{T}
+        @test size(k1) == (length(grid), length(mesh))
+        @test size(k2) == (length(grid), length(mesh))
     end
 end

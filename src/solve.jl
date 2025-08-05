@@ -190,6 +190,10 @@ function SPX(npole::Int;
     return SPX(method, nfine, npole, ntry, nstep, theta, eta)
 end
 
+# CPS ==========================
+
+struct CPS <: Solver end
+
 # ================================
 # Defaults
 # ================================
