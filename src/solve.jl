@@ -192,7 +192,9 @@ end
 
 # CPS ==========================
 
-struct CPS <: Solver end
+struct CPS <: Solver
+    λ::Real
+end
 
 # ================================
 # Defaults

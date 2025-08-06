@@ -4,7 +4,7 @@ include("../../test/testsetup.jl")
 T = Float64
 A, ctx, GFV = dfcfg(T, Cont(); ml=1000)
 
-alg = CPS()
+alg = CPS(6)
 
 mesh, reA = solve(GFV, ctx, alg)
 
